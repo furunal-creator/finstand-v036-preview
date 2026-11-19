@@ -3161,7 +3161,7 @@ function l16Run(spec,T,horizon){
   evs.forEach(e=>q.push({d:e.d,k:'e',e}));sched.forEach(p=>{if(p.d<=until)q.push({d:p.d,k:'p',p})});
   const order={e:0,p:1,m:2};const srt=()=>q.sort((a,b)=>a.d-b.d||order[a.k]-order[b.k]);srt();
   const step=d=>{if(d<=t)return;const rem=end-t;const it=L*(Math.pow(1+r,(d-t)/365)-1);const dd=rem>0&&cost-acc>0?(cost-acc)*Math.min(d-t,rem)/rem:0;L+=it;acc+=dd;LT+=it*curS;const m=mo(d);m.int+=it*curS;m.dep+=dd;t=d};
-  const remeasure=(d,newR)=>{if(newR!=null)r=newR;sched=l16Sched(spec.anchor,spec.freq,spec.pesin,end,rentAt,d);const nL=l16PV(sched,r,d);const dL=nL-L;L=nL;cost+=dL*curS;LT+=dL*curS;mo(d).mod+=dL*curS;
+  const remeasure=(d,newR)=>{if(newR!=null)r=newR;sched=l16Sched(spec.anchor,spec.freq,spec.pesin,end,rentAt,d);const nL=l16PV(sched,r,d);const dL=nL-L;L=nL;let dR=dL*curS;const nbv0=cost-acc;if(nbv0+dR<0){mo(d).gl+=-(nbv0+dR);dR=-nbv0}cost+=dR;LT+=dL*curS;mo(d).mod+=dR;
     for(let i=q.length-1;i>=0;i--)if(q[i].k==='p')q.splice(i,1);sched.forEach(p=>{if(p.d<=until)q.push({d:p.d,k:'p',p})});srt()};
   const handle=e=>{const d=e.d;
     if(e.tur==='Fesih'){const mm=mo(d);mm.dC+=cost;mm.dA+=acc;mm.Lout+=L*curS;mm.gl+=L*curS-(cost-acc);LT-=L*curS;L=0;cost=0;acc=0;sched=[];end=d;for(let i=q.length-1;i>=0;i--)if(q[i].k==='p')q.splice(i,1);return}
